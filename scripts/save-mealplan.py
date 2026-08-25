@@ -65,20 +65,15 @@ def getMealPlan():
 
     if(response):
         results = response["results"]
-        meals = []
+        meals = {}
 
         for recipe_obj in results:
-            meal = {
-                "day": "",
-                "icon_url": "",
-                "recipes": ""
-            }
-            meal["icon_url"] = recipe_obj["icon"]["file"]["url"]
-            meal["day"] = recipe_obj["properties"]["Day of Week"]["formula"]["string"]
-            recipes = recipe_obj["properties"]["Recipe Name"]["rollup"]["array"] # returns an array
+            day = recipe_obj["properties"]["Day of Week"]["formula"]["string"]
+            recipes_arr = recipe_obj["properties"]["Recipe Name"]["rollup"]["array"] # returns an array
             recipes_text = ""
-            if len(recipes) > 0:
-                for recipe in recipes:
+            recipes = ""
+            if len(recipes_arr) > 0:
+                for recipe in recipes_arr:
                     if recipes_text:
                         recipes_text += ", "
                     recipes_text += recipe["title"][0]["plain_text"]
@@ -90,14 +85,14 @@ def getMealPlan():
 
             if recipes_text:
                 if note_text:
-                    meal["recipes"] = f"{recipes_text}: {note_text}"
+                    recipes = f"{recipes_text}: {note_text}"
                 else:
-                    meal["recipes"] = recipes_text
+                    recipes = recipes_text
             elif note_text:
-                meal["recipes"] = note_text
+                recipes = note_text
 
 
-            meals.append(meal)
+            meals[day] = recipes
 
         print(meals)
         with open("public/mealplan.json", "w") as file:
