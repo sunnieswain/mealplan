@@ -29,12 +29,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Generate JSON
+      - name: Generate Meal Plan JSON
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: |
-            python -c "import os; print('Token exists:', bool(os.environ.get('NOTION_TOKEN')))"
-            python scripts/save-mealplan.py
+          python scripts/save-mealplan.py
+
+      - name: Generate Countdown JSON
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
+          python scripts/save-countdowns.py
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
